@@ -25,7 +25,7 @@ import lombok.Setter;
 @Table(name = "reservas")
 @Getter
 @Setter
-@NoArgsConstructor (access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Reserva {
