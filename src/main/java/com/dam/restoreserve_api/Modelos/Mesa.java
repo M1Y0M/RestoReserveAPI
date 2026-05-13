@@ -31,9 +31,6 @@ public class Mesa {
     private Long id;
 
     @Column(nullable = false)
-    private int numero;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Zona zona; // INTERIOR, EXTERIOR.
 
