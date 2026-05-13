@@ -21,7 +21,7 @@ import lombok.Setter;
 @Table(name = "usuarios")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // Hibernate puede acceder igualmente y así no se pueden crear instancias vacías.
+@NoArgsConstructor
 @AllArgsConstructor // Para usar con builder.
 @Builder // Para que el constructor se vea más bonito . 
 public class Usuario {

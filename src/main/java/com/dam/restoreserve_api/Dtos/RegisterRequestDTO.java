@@ -11,6 +11,13 @@ public record RegisterRequestDTO(
 
     @NotBlank(message = "La contraseña no puede estar vacía.")
     @Size(min = 8, max = 20, message = "La contraseña debe tener entre 8 y 20 caracteres.")
-    String password
+    String password,
+
+    @NotBlank(message = "El nombre no puede estar vacío.")
+    @Size(max = 50)
+    String nombre,
+
+    @NotBlank(message = "El rol no puede estar vacío.")
+    String rol
 
 ) {}
