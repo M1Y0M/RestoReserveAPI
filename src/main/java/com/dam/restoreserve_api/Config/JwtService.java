@@ -3,9 +3,12 @@ package com.dam.restoreserve_api.Config;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.stereotype.Service;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+@Service
 public class JwtService {
 
     private final String SECRET = "iRCXv3v5jmD90pkugE9Kib1RvCULr9hQlgHssh42jIy";
