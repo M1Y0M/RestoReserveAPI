@@ -44,6 +44,11 @@ public class ReservaService {
             throw new IllegalArgumentException("La mesa está ocupada por una reserva anterior.");
         }
 
+        if (dto.numPersonas() > mesa.getCapacidad()) {
+            throw new IllegalArgumentException("La mesa no tiene capacidad para el nº de personas de esta reserva.");
+        }
+
+
         Reserva nuevaReserva = new Reserva();
         nuevaReserva.setFechaHora(dto.fechaHora());
         nuevaReserva.setNumPersonas(dto.numPersonas());
