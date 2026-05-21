@@ -24,7 +24,7 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.listarTodas());
     }
 
-    @PostMapping
+    @PostMapping("/crear")
     public ResponseEntity<Reserva> guardarReserva(@Valid @RequestBody ReservationRequestDTO reservaDto) {
         return ResponseEntity.ok(reservaService.crearReserva(reservaDto));
     }

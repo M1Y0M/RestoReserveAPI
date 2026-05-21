@@ -3,6 +3,7 @@ package com.dam.restoreserve_api.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.query.Jpa21Utils;
 import org.springframework.stereotype.Service;
 
 import com.dam.restoreserve_api.Dtos.ReservationRequestDTO;
@@ -35,7 +36,7 @@ public class ReservaService {
 
         boolean conflicto = reservaRepo.existsByMesaAndEstadoAndFechaHoraBetween(
                 mesa, 
-                Estado.CONFIRMADA, 
+                Estado.COMPLETADA, 
                 limiteAnterior, 
                 horaSolicitada
         );
@@ -48,12 +49,26 @@ public class ReservaService {
             throw new IllegalArgumentException("La mesa no tiene capacidad para el nº de personas de esta reserva.");
         }
 
+        List <Reserva> reservas = listarTodas();
+
+        int reservasCompletadas = 0; 
+
+        for (Reserva r : reservas) {
+
+            if (r.getEstado().equals("COMPLETADA") && r.getUsuario().getId() == dto.usuarioId());
+            reservasCompletadas++;
+
+        }
+        
+        if (mesa.getIsVip() && reservasCompletadas > 3) {
+            throw new IllegalArgumentException("No puede reservar una mesa vip pq no tiene por lo menos 3 reservas completadas.");
+        }
 
         Reserva nuevaReserva = new Reserva();
         nuevaReserva.setFechaHora(dto.fechaHora());
         nuevaReserva.setNumPersonas(dto.numPersonas());
         nuevaReserva.setMesa(mesa);
-        nuevaReserva.setEstado(Estado.CONFIRMADA);
+        nuevaReserva.setEstado(Estado.COMPLETADA);
 
         return reservaRepo.save(nuevaReserva);
     }

@@ -11,6 +11,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record ReservationRequestDTO(
 
+    @NotNull(message = "Debe indicarse el usuario")
+    Long usuarioId,
+
     @NotNull(message = "Debe indicarse la mesa.")
     Long mesaId,
 

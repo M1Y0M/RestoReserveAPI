@@ -37,4 +37,7 @@ public class Mesa {
     @Column(nullable = false)
     private int capacidad;
 
+    @Column(nullable = false)
+    private Boolean isVip; 
+
 }

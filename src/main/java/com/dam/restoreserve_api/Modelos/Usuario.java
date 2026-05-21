@@ -42,13 +42,13 @@ public class Usuario {
     @Column(nullable = false, length = 50)
     private String nombre;
   
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String apellidos;
 
-    @Column(nullable = false, length = 15)
+    @Column(length = 15)
     private String telefono;
 
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(unique = true, length = 100)
     private String email;
 
 }
