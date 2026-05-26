@@ -29,7 +29,7 @@ public class AuthService {
         usuario.setUsername(request.username());
         usuario.setPasswordHash(passwordEncoder.encode(request.password()));
         usuario.setNombre(request.nombre());
-        usuario.setRol(Rol.valueOf(request.rol().toUpperCase()));
+        usuario.setRol(Rol.USER);
 
         usuarioRepo.save(usuario);
 

@@ -3,14 +3,15 @@ package com.dam.restoreserve_api.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.query.Jpa21Utils;
 import org.springframework.stereotype.Service;
 
 import com.dam.restoreserve_api.Dtos.ReservationRequestDTO;
 import com.dam.restoreserve_api.Enums.Estado;
 import com.dam.restoreserve_api.Modelos.Reserva;
+import com.dam.restoreserve_api.Modelos.Usuario;
 import com.dam.restoreserve_api.Modelos.Mesa;
 import com.dam.restoreserve_api.Repository.ReservaRepository;
+import com.dam.restoreserve_api.Repository.UsuarioRepository;
 import com.dam.restoreserve_api.Repository.MesaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ReservaService {
 
     private final ReservaRepository reservaRepo;
     private final MesaRepository mesaRepo;
+    private final UsuarioRepository usuarioRepo;
 
     public List<Reserva> listarTodas() {
         return reservaRepo.findAll();
@@ -29,16 +31,19 @@ public class ReservaService {
     public Reserva crearReserva(ReservationRequestDTO dto) {
         
         Mesa mesa = mesaRepo.findById(dto.mesaId())
-                .orElseThrow(() -> new IllegalArgumentException("La mesa no existe."));
+            .orElseThrow(() -> new IllegalArgumentException("La mesa no existe."));
+
+        Usuario usuario = usuarioRepo.findById(dto.usuarioId()) // Nuevo...
+            .orElseThrow(() -> new IllegalArgumentException("El usuario no existe."));
 
         LocalDateTime limiteAnterior = dto.fechaHora().minusHours(2);
-        LocalDateTime horaSolicitada = dto.fechaHora();
+        LocalDateTime limitePosterior = dto.fechaHora().plusHours(2);
 
         boolean conflicto = reservaRepo.existsByMesaAndEstadoAndFechaHoraBetween(
                 mesa, 
                 Estado.COMPLETADA, 
                 limiteAnterior, 
-                horaSolicitada
+                limitePosterior
         );
 
         if (conflicto) {
@@ -49,9 +54,10 @@ public class ReservaService {
             throw new IllegalArgumentException("La mesa no tiene capacidad para el nº de personas de esta reserva.");
         }
 
+        /* 
         List <Reserva> reservas = listarTodas();
 
-        int reservasCompletadas = 0; 
+        int reservasCompletadas = 0;
 
         for (Reserva r : reservas) {
 
@@ -59,12 +65,28 @@ public class ReservaService {
             reservasCompletadas++;
 
         }
-        
+       
         if (mesa.getIsVip() && reservasCompletadas > 3) {
+            throw new IllegalArgumentException("No puede reservar una mesa vip pq no tiene por lo menos 3 reservas completadas.");
+        }
+        */
+
+        List <Reserva> reservasUsuario = reservaRepo.findByUsuarioId(usuario.getId());
+        
+        int reservasCompletadas = 0; 
+
+        for (Reserva r : reservasUsuario) {
+            if (r.getEstado() == Estado.COMPLETADA) {
+                reservasCompletadas++;
+            }
+        }
+
+        if(reservasCompletadas < 3 && mesa.getIsVip()) {
             throw new IllegalArgumentException("No puede reservar una mesa vip pq no tiene por lo menos 3 reservas completadas.");
         }
 
         Reserva nuevaReserva = new Reserva();
+        nuevaReserva.setUsuario(usuario); // Nuevo... 
         nuevaReserva.setFechaHora(dto.fechaHora());
         nuevaReserva.setNumPersonas(dto.numPersonas());
         nuevaReserva.setMesa(mesa);
@@ -81,3 +103,4 @@ public class ReservaService {
         return reservaRepo.save(reserva);
     }
 }
+
