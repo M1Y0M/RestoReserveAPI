@@ -21,7 +21,7 @@ import lombok.Setter;
 @Table(name = "mesas")
 @Getter
 @Setter
-@NoArgsConstructor (access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Mesa {
