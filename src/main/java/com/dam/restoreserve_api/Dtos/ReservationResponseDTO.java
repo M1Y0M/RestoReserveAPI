@@ -2,12 +2,14 @@ package com.dam.restoreserve_api.Dtos;
 
 import java.time.LocalDateTime;
 
+import com.dam.restoreserve_api.Enums.Estado;
+
 public record ReservationResponseDTO(
 
     Long id,
-    String mesaNombre,
-    String clienteNombre,
+    Long mesaId,
+    Long usuarioId,
     LocalDateTime fechaHora,
-    String estado
+    Estado estado
 
 ) {}

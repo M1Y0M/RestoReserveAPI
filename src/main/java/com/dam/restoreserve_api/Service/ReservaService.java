@@ -2,10 +2,12 @@ package com.dam.restoreserve_api.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.dam.restoreserve_api.Dtos.ReservationRequestDTO;
+import com.dam.restoreserve_api.Dtos.ReservationResponseDTO;
 import com.dam.restoreserve_api.Enums.Estado;
 import com.dam.restoreserve_api.Modelos.Reserva;
 import com.dam.restoreserve_api.Modelos.Usuario;
@@ -24,11 +26,23 @@ public class ReservaService {
     private final MesaRepository mesaRepo;
     private final UsuarioRepository usuarioRepo;
 
-    public List<Reserva> listarTodas() {
-        return reservaRepo.findAll();
+    public List<ReservationResponseDTO> listarTodas() {
+        
+        List<Reserva> reservas = reservaRepo.findAll();
+
+        return reservas.stream().map(reserva -> new ReservationResponseDTO(
+
+            reserva.getId(),
+            reserva.getMesa().getId(),
+            reserva.getUsuario().getId(),
+            reserva.getFechaHora(),
+            reserva.getEstado()
+
+        )).collect(Collectors.toList());
+
     }
 
-    public Reserva crearReserva(ReservationRequestDTO dto) {
+    public ReservationResponseDTO crearReserva(ReservationRequestDTO dto) {
         
         Mesa mesa = mesaRepo.findById(dto.mesaId())
             .orElseThrow(() -> new IllegalArgumentException("La mesa no existe."));
@@ -92,15 +106,38 @@ public class ReservaService {
         nuevaReserva.setMesa(mesa);
         nuevaReserva.setEstado(Estado.COMPLETADA);
 
-        return reservaRepo.save(nuevaReserva);
+        Reserva reservaGuardada = reservaRepo.save(nuevaReserva);
+
+        return new ReservationResponseDTO(
+
+            reservaGuardada.getId(),
+            reservaGuardada.getMesa().getId(),
+            reservaGuardada.getUsuario().getId(),
+            reservaGuardada.getFechaHora(),
+            reservaGuardada.getEstado()
+
+        );
+         
     }
 
-    public Reserva cancelarReserva(Long id) {
+    public ReservationResponseDTO cancelarReserva(Long id) {
         Reserva reserva = reservaRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
         reserva.setEstado(Estado.CANCELADA);
-        return reservaRepo.save(reserva);
+        
+        Reserva reservaModificada = reservaRepo.save(reserva);
+
+        return new ReservationResponseDTO(
+
+            reservaModificada.getId(),
+            reservaModificada.getMesa().getId(),
+            reservaModificada.getUsuario().getId(),
+            reservaModificada.getFechaHora(),
+            reservaModificada.getEstado()
+
+        );
+
     }
 }
 

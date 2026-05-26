@@ -1,6 +1,7 @@
 package com.dam.restoreserve_api.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,35 @@ public class MesaService {
 
     private final MesaRepository mesaRepo;
 
-    public Mesa crearMesa(MesaDTO mesa) {
+    public MesaDTO crearMesa(MesaDTO mesa) {
 
         Mesa nuevaMesa = new Mesa();
         nuevaMesa.setCapacidad(mesa.capacidad());
         nuevaMesa.setIsVip(mesa.isVip());
         nuevaMesa.setZona(Zona.INTERIOR); // Lo pongo automático pq como no voy a hacer nada con esto de momento.
         
-        return mesaRepo.save(nuevaMesa);
+        Mesa mesaGuardada = mesaRepo.save(nuevaMesa);
+
+        return new MesaDTO(
+            mesaGuardada.getId(),
+            mesaGuardada.getCapacidad(),
+            mesaGuardada.getIsVip()
+        );
 
     }
 
-    public List<Mesa> obtenerMesas() {
-        return mesaRepo.findAll();
+    public List<MesaDTO> obtenerMesas() {
+
+        List<Mesa> mesas = mesaRepo.findAll();
+
+        return mesas.stream().map(mesa -> new MesaDTO(
+
+            mesa.getId(),
+            mesa.getCapacidad(),
+            mesa.getIsVip()
+
+        )).collect(Collectors.toList());
+
     }
 
     public void borrarMesa(Long id) {

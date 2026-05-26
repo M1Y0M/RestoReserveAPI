@@ -29,6 +29,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(usuario.getRol().toString())
                 .build();    
 
-    };
+    }
 
 }
